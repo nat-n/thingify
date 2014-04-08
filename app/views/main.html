@@ -1,36 +1,256 @@
-<div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
-  </ul>
-  <h3 class="text-muted">thingify</h3>
+<div class="page-header">
+  <h3 class="text-muted">Thingify - Make your things into things</h3>
 </div>
 
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
+<div class="row">
+<form ng-submit="$parent.thingify($event, this.thing)">
+
+  <div class="col-md-6">
+
+    <div class="well">
+
+      <input class="alert alert-info col-md-12" type="file" id="filesInput" name="files" files-model="$parent.input_files" multiple>
+
+      <h5>Properties for things in this batch</h5>
+      <textarea class="form-control"
+                placeholder="Description"
+                name="description"
+                ng-model="thing.description"
+                ng-init="thing.description=''"></textarea>
+      <br>
+      <select class="form-control"
+              name="category"
+              ng-model="thing.category"
+              ng-init="thing.category='3D Printing'">
+        <option value="3D Printing"><font><font>3D Printing</font></font></option>
+        <option value="3D Printer Accessories"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;3D Printer Accessories</font></font></option>
+        <option value="3D Printer Extruders"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;3D Printer Extruders</font></font></option>
+        <option value="3D Printer Parts"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;3D Printer Parts</font></font></option>
+        <option value="3D Printers"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;3D Printers</font></font></option>
+        <option value="3D Printing Tests"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;3D Printing Tests</font></font></option>
+        <option value="Art"><font><font>Art</font></font></option>
+        <option value="2D Art"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;2D Art</font></font></option>
+        <option value="Art Tools"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Art Tools</font></font></option>
+        <option value="Coins & Badges"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Coins &amp; Badges</font></font></option>
+        <option value="Interactive Art"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Interactive Art</font></font></option>
+        <option value="Math Art"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Math Art</font></font></option>
+        <option value="Scans & Replicas"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Scans &amp; Replicas</font></font></option>
+        <option value="Sculptures"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Sculptures</font></font></option>
+        <option value="Signs & Logos"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Signs &amp; Logos</font></font></option>
+        <option value="Fashion"><font><font>Fashion</font></font></option>
+        <option value="Accessories"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Accessories</font></font></option>
+        <option value="Bracelets"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Bracelets</font></font></option>
+        <option value="Costume"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Costume</font></font></option>
+        <option value="Earrings"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Earrings</font></font></option>
+        <option value="Glasses"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Glasses</font></font></option>
+        <option value="Jewelry"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Jewelry</font></font></option>
+        <option value="Keychains"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Keychains</font></font></option>
+        <option value="Rings"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Rings</font></font></option>
+        <option value="65"><font><font>Gadgets</font></font></option>
+        <option value="Audio"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Audio</font></font></option>
+        <option value="Camera"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Camera</font></font></option>
+        <option value="Computer"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Computer</font></font></option>
+        <option value="Mobile Phone"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Mobile Phone</font></font></option>
+        <option value="Tablet"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Tablet</font></font></option>
+        <option value="Video Games"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Video Games</font></font></option>
+        <option value="Hobby"><font><font>Hobby</font></font></option>
+        <option value="Automotive"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Automotive</font></font></option>
+        <option value="DIY"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;DIY</font></font></option>
+        <option value="Electronics"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Electronics</font></font></option>
+        <option value="Music"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Music</font></font></option>
+        <option value="R/C Vehicles"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;R/C Vehicles</font></font></option>
+        <option value="Robotics"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Robotics</font></font></option>
+        <option value="Sport & Outdoors"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Sport &amp; Outdoors</font></font></option>
+        <option value="Household"><font><font>Household</font></font></option>
+        <option value="Bathroom"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Bathroom</font></font></option>
+        <option value="Containers"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Containers</font></font></option>
+        <option value="Decor"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Decor</font></font></option>
+        <option value="Household Supplies"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Household Supplies</font></font></option>
+        <option value="Kitchen & Dining"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Kitchen &amp; Dining</font></font></option>
+        <option value="Office"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Office</font></font></option>
+        <option value="Organization"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Organization</font></font></option>
+        <option value="Outdoor & Garden"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Outdoor &amp; Garden</font></font></option>
+        <option value="Pets"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Pets</font></font></option>
+        <option value="Replacement Parts"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Replacement Parts</font></font></option>
+        <option value="Learning"><font><font>Learning</font></font></option>
+        <option value="Biology"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Biology</font></font></option>
+        <option value="Engineering"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Engineering</font></font></option>
+        <option value="Math"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Math</font></font></option>
+        <option value="Physics & Astronomy"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Physics &amp; Astronomy</font></font></option>
+        <option value="Models"><font><font>Models</font></font></option>
+        <option value="Animals"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Animals</font></font></option>
+        <option value="Buildings & Structures"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Buildings &amp; Structures</font></font></option>
+        <option value="Creatures"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Creatures</font></font></option>
+        <option value="Food & Drink"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Food &amp; Drink</font></font></option>
+        <option value="Model Furniture"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Model Furniture</font></font></option>
+        <option value="Model Robots"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Model Robots</font></font></option>
+        <option value="People"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;People</font></font></option>
+        <option value="Props"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Props</font></font></option>
+        <option value="Vehicles"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Vehicles</font></font></option>
+        <option value="Tools"><font><font>Tools</font></font></option>
+        <option value="Hand Tools"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Hand Tools</font></font></option>
+        <option value="Machine Tools"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Machine Tools</font></font></option>
+        <option value="Parts"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Parts</font></font></option>
+        <option value="Tool Holders & Boxes"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Tool Holders &amp; Boxes</font></font></option>
+        <option value="72"><font><font>Toys &amp; Games</font></font></option>
+        <option value="Chess"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Chess</font></font></option>
+        <option value="Construction Toys"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Construction Toys</font></font></option>
+        <option value="Dice"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Dice</font></font></option>
+        <option value="Games"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Games</font></font></option>
+        <option value="Mechanical Toys"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Mechanical Toys</font></font></option>
+        <option value="Playsets"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Playsets</font></font></option>
+        <option value="Puzzles"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Puzzles</font></font></option>
+        <option value="Toy & Game Accessories"><font><font>&nbsp;&nbsp;&nbsp;&nbsp;Toy &amp; Game Accessories</font></font></option>
+        <option value="Other"><font><font>Other</font></font></option>
+      </select>
+      <br>
+      <select class="form-control"
+              name="license"
+              ng-model="thing.license"
+              ng-init="thing.license='cc'">
+        <option value="cc">Creative Commons - Attribution</option>
+        <option value="cc-sa">Creative Commons - Attribution - Share Alike</option>
+        <option value="cc-nd">Creative Commons - Attribution - No Derivatives</option>
+        <option value="cc-nc">Creative Commons - Attribution - Non-Commercial</option>
+        <option value="cc-nc-sa">Attribution - Non-Commercial - Share Alike</option>
+        <option value="cc-nc-nd">Attribution - Non-Commercial - No Derivatives</option>
+        <option value="pd0">Creative Commons - Public Domain Dedication</option>
+        <option value="gpl">GNU - GPL</option>
+        <option value="lgpl">GNU - LGPL</option>
+        <option value="bsd">BSD License</option>
+      </select>
+      <br>
+      <input type="text"
+             class="form-control"
+             placeholder="Tags (Comma seperated)"
+             name="tags"
+             ng-model="thing.tags"
+             ng-init="thing.tags=''">
+      <br>
+      <textarea class="form-control"
+                placeholder="Instructions"
+                name="instructions"
+                ng-model="thing.instructions"
+                ng-init="thing.instructions=''"></textarea>
+      <br>
+
+      <input type="checkbox"
+             name="wip"
+             id="wip"
+             ng-model="thing.wip">
+      <label for="wip">Work in progress</label>
+
+      <input class="btn btn-primary pull-right" type="submit" value="Thingify some things">
+      <br>
+
+    </div>
+
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default" ng-show="s.length > 0">
+      <div class="panel-heading">
+        <h3 class="panel-title">Things waiting to be made into things</h3>
+      </div>
+
+      <table class="table table-condensed table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="f in s = (files|thingStatus:'selected')">
+            <td>{{f.name}}</td>
+            <td>{{f.size}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="panel panel-primary" ng-show="p.length > 0 ">
+      <div class="panel-heading">
+        <h3 class="panel-title">Things in Progress</h3>
+      </div>
+      <table class="table table-condensed table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="f in p = (files|thingStatus:'inProgress')">
+            <td>
+              <a href="{{f.tv_obj.public_url}}" target="_blank" ng-show="f.tv_obj">
+                {{f.name}}
+              </a>
+              <span ng-hide="f.tv_obj">{{f.name}}</span>
+            </td>
+            <td>{{f.size}}</td>
+            <td>{{f.status}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel panel-success" ng-show="c.length > 0">
+      <div class="panel-heading">
+        <h3 class="panel-title">Thingified Things</h3>
+      </div>
+      <table class="table table-condensed table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="f in c = (files|thingStatus:'completed')">
+              <td>
+                <a href="{{f.tv_obj.public_url}}" target="_blank">
+                  {{f.name}}
+                </a>
+              </td>
+              <td>{{f.size}}</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel panel-danger" ng-show="e.length > 0 ">
+      <div class="panel-heading">
+        <h3 class="panel-title">Things that went wrong</h3>
+      </div>
+      <table class="table table-condensed table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="f in e = (files|thingStatus:'error')">
+            <td>
+              <a href="{{f.tv_obj.public_url}}" target="_blank" ng-show="f.tv_obj">
+                {{f.name}}
+              </a>
+              <span ng-hide="f.tv_obj">{{f.name}}</span>
+            </td>
+            <td>{{f.size}}</td>
+            <td>{{f.status}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert" ng-hide="files">
+      <h2><== Choose some files to get started<h2>
+    </div>
+  </div>
+
+</form>
 </div>
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
-</div>
-
-<div class="footer">
-  <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
-</div>
