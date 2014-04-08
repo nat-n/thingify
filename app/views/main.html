@@ -2,7 +2,21 @@
   <h3 class="text-muted">Thingify - Make your things into things</h3>
 </div>
 
-<div class="row">
+<div class="row" ng-hide="code">
+  <div class="well">
+    <h3>Welcome to Thingify</h3>
+    <p>
+      A tool to make it easy to upload files to their own things in the <a href="http://thingiverse.com">Thingiverse</a>.
+    </p>
+    <p>
+      You need to authenticate Thingify with your Thingiverse account to proceed.
+    </p>
+
+    <a href="https://www.thingiverse.com/login/oauth/authorize?client_id={{client_id}}" class="btn btn-lg btn-primary">Authenticate with Thingiverse</a>
+  </div>
+</div>
+
+<div class="row" ng-show="code">
 <form ng-submit="$parent.thingify($event, this.thing)">
 
   <div class="col-md-6">
@@ -253,4 +267,3 @@
 
 </form>
 </div>
-

@@ -2,13 +2,25 @@
 
 angular.module('thingifyApp')
 
-.controller 'MainCtrl', ($scope, thingifyHelper, $filter) ->
+.controller 'MainCtrl', ($scope, thingifyHelper, $filter, $http, $window) ->
+  # fetch the client id from the backend
+  $http.get("/client_id").then (res) -> $scope.client_id = res.data
+
+  # check for a code in the querystring
+  codeMatch = /code=?([^&]*)/.exec(window.location.search.slice(1))
+  $scope.code = codeMatch and codeMatch[1]
+
+  # get access_token via the backend if we have a code
+  if $scope.code
+    auth_req = $http.get("/auth?code=#{$scope.code}")
+    auth_req.then (res) ->
+      $scope.token = /access_token=(.*?)&/.exec(res.data)
+    auth_req.error ->
+      alert('Uh oh: Authorization failed')
+
   $scope.files = []
 
-  $scope.token = '13f69aa52e5373b9e20bd70782a6c0ec'
-
   $scope.$watch 'input_files', (files) ->
-    console.log files
     return unless files
     i = -1
     $scope.files = ({
@@ -145,8 +157,6 @@ angular.module('thingifyApp')
           headers: xhr.getResponseHeader
           config: {}
           xhr: xhr
-
-        console.log 'xhr.status', xhr
         if r.status is 200
           deferred.resolve(r)
         else
