@@ -18,7 +18,8 @@ angular.module('thingifyApp')
       if token_match
         $scope.token = token_match[1]
       else
-        $scope.code = null unless $scope.token
+        $scope.code = null
+        window.location.search = ''
     auth_req.error ->
       alert('Uh oh: Authorization failed')
 
