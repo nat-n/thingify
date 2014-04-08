@@ -36,7 +36,6 @@ http.createServer(function (req, res) {
 
   if (codeMatch) {
     get_access_token(client_id, client_secret, codeMatch[1], function(auth_resp){
-      console.log(client_id, client_secret, codeMatch[1], auth_resp)
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(auth_resp))
     });
