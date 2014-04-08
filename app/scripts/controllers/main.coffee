@@ -14,10 +14,8 @@ angular.module('thingifyApp')
   if $scope.code
     auth_req = $http.get("/auth?code=#{$scope.code}")
     auth_req.then (res) ->
-      if res.data is "The specified code was not found."
-        $scope.code = null
-      else
-        $scope.token = /access_token=(.*?)&/.exec(res.data)
+      $scope.token = /access_token=(.*?)&/.exec(res.data)
+      $scope.code = null unless $scope.token
     auth_req.error ->
       alert('Uh oh: Authorization failed')
 
