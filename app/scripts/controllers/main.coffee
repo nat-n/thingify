@@ -4,7 +4,7 @@ angular.module('thingifyApp')
 
 .controller 'MainCtrl', ($scope, thingifyHelper, $filter, $http, $window) ->
   # fetch the client id from the backend
-  $http.get("/client_id").then (res) -> $scope.client_id = res.data
+  $http.get("/client_id").then (res) -> $scope.client_id = res.data.client_id
 
   # check for a code in the querystring
   codeMatch = /code=?([^&]*)/.exec(window.location.search.slice(1))
