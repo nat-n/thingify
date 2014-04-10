@@ -23,14 +23,15 @@
 
     <div class="well">
 
-      <input class="alert alert-info col-md-12" type="file" id="filesInput" name="files" files-model="$parent.input_files" multiple>
+      <input class="alert alert-info col-md-12" type="file" id="filesInput" name="files" files-model="$parent.input_files" multiple ng-required="files.length==0">
 
       <h5>Properties for things in this batch</h5>
       <textarea class="form-control"
-                placeholder="Description"
+                placeholder="Description (required to publish)"
                 name="description"
                 ng-model="thing.description"
-                ng-init="thing.description=''"></textarea>
+                ng-init="thing.description=''"
+                required></textarea>
       <br>
       <select class="form-control"
               name="category"
@@ -148,11 +149,26 @@
                 ng-init="thing.instructions=''"></textarea>
       <br>
 
+      <select class="form-control"
+              ng-model="thing.collection"
+              ng-options="k as v for (k, v) in collections">
+        <option value="">Select Collection</option>
+      </select>
+
+      <br>
+
       <input type="checkbox"
              name="wip"
              id="wip"
              ng-model="thing.wip">
-      <label for="wip">Work in progress</label>
+      <label for="wip">&nbsp;Work in progress</label>
+      <br>
+      <input type="checkbox"
+             name="publish"
+             id="publish"
+             ng-model="thing.publish"
+             ng-init="thing.publish=true">
+      <label for="publish">&nbsp;Publish</label>
 
       <input class="btn btn-primary pull-right" type="submit" value="Thingify some things">
       <br>
