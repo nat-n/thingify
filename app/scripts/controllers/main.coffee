@@ -59,14 +59,15 @@ angular.module('thingifyApp')
     if file.for_collection and not file.collected
       promises.push workflowHelper.add_thing_to_collection(file)
 
-    console.log file.name, file.published, file.finalized, file.collected, file
-
     all_done = $q.all(promises)
     all_done.then ->
-        file.satus = 'Complete'
+        file.status = 'Complete'
     all_done.catch ->
       if remaining_attempts > 0
         setTimeout -> finalize_work(file, remaining_attempts-1)
+      else
+        file.status = 'Not finalized'
+
 
   thingify_workflow = (file, thing_data) ->
     new_thing = _.cloneDeep(thing_data)
@@ -138,7 +139,8 @@ angular.module('thingifyApp')
       'Thing Deleted',
       'Delete Failed',
       'Publish failed',
-      'Failed add to collection'
+      'Failed add to collection',
+      'Not finalised'
     ]
   (files, status) ->
     result.length = 0
