@@ -59,6 +59,8 @@ angular.module('thingifyApp')
     if file.for_collection and not file.collected
       promises.push workflowHelper.add_thing_to_collection(file)
 
+    console.log file.name, file.published, file.finalized, file.collected, file
+
     $q.all(promises).then (-> file.satus = 'Complete'), ->
       if remaining_attempts > 0
         setTimeout -> finalize_work(file, remaining_attempts-1)
@@ -81,9 +83,6 @@ angular.module('thingifyApp')
   $scope.thingify = (event, thing_data) ->
     # clear the files input element
     filesInput.value = []
-    thing_collection = thing_data.collection
-
-    console.log 'thing_collection', thing_collection
 
     # restrict thing_data to valid params
     valid_params = ['name', 'license', 'category', 'description', 'instructions', 'is_wip', 'tags', 'ancestors']
