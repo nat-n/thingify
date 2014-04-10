@@ -3,7 +3,7 @@
 angular.module('thingifyApp')
 
 .service 'thingiverseAPI', ($http, $q) ->
-  api_host = 'https://api.thingiverse.com'
+  api_host = 'http://api.thingiverse.com'
   create_thing: (thing_data, access_token) ->
     $http
       method: 'post'
