@@ -19,7 +19,6 @@ angular.module('thingifyApp')
         $scope.token = token_match[1]
         workflowHelper.set_access_token($scope.token)
         thingiverseAPI.collections_by_user($scope.token).then (res)->
-          console.log res.data
           $scope.collections = {}
           for coll in res.data
             $scope.collections[coll.id] = coll.name
@@ -92,7 +91,7 @@ angular.module('thingifyApp')
     # transform and cleanup tags
     delete thing_data.param for param in thing_data when param not in valid_params
     thing_data.tags = thing_data.tags.split(/\s*,\s*/) if _.isString(thing_data.tags)
-    delete thing_data.tags unless thing_data.tags.join('')
+    delete thing_data.tags if thing_data.tags and not thing_data.tags.join('')
 
     # create todo list of files in this batch
     fileIDs = _.range($scope.files.length)

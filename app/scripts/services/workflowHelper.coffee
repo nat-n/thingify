@@ -77,12 +77,10 @@ angular.module('thingifyApp')
 
     req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
     req.then (res) ->
-      # upload finalized
       file.status = 'Published'
       file.published = true
       deferred.resolve(file)
     req.error () ->
-      # upload finalized
       file.status = 'Publish failed'
       deferred.reject(file)
     deferred.promise
