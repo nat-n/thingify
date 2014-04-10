@@ -59,7 +59,7 @@ angular.module('thingifyApp')
     if file.for_collection and not file.collected
       promises.push workflowHelper.add_thing_to_collection(file)
 
-    $q.all(promises).then (-> file.satus = Complete), ->
+    $q.all(promises).then (-> file.satus = 'Complete'), ->
       if remaining_attempts > 0
         setTimeout -> finalize_work(file, remaining_attempts-1)
       else
@@ -126,15 +126,18 @@ angular.module('thingifyApp')
       'Pre-registering upload', 'Pre-registered Upload',
       'Uploading', 'Uploaded',
       'Finalizing Upload', 'Upload Finalized',
-      'Publishing Thing'] or
-    status is 'completed' and file.status is 'Published' or
+      'Publishing Thing', 'Published',
+      'Adding thing to collection', 'Added to collection'] or
+    status is 'completed' and file.status is 'Complete' or
     status is 'error' and file.status in [
       'Failed Creation',
       'Failed Upload Pre-registration',
       'Failed Upload',
       'Deleting Thing',
       'Thing Deleted',
-      'Delete Failed'
+      'Delete Failed',
+      'Publish failed',
+      'Failed add to collection'
     ]
   (files, status) ->
     result.length = 0
