@@ -45,6 +45,7 @@ angular.module('thingifyApp')
         # this means the error was due to a redirect (303) which actually
         #  means the file was uploaded successfully
         file.status = 'Uploaded'
+        file.uploaded = true
         deferred.resolve(file)
       else
         # This looks like a real error :(
@@ -52,55 +53,65 @@ angular.module('thingifyApp')
         deferred.reject(file)
     deferred.promise
 
-
   finalize_upload: (file) ->
     file.status = "Finalizing Upload"
     deferred = $q.defer()
     deferred.promise.error = deferred.promise.catch
 
-    fu = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
-    fu.then (res) ->
+    req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
+    req.then (res) ->
       # upload finalized
       file.status = 'Upload Finalized'
       file.finalized = true
       deferred.resolve(file)
-    fu.error () ->
+    req.error () ->
       # upload finalized
       file.status = 'Upload not finalised (don\'t worry)'
-      file.finalized = false
       deferred.reject(file)
     deferred.promise
-
 
   publish_thing: (file) ->
     file.status = 'Publishing Thing'
     deferred = $q.defer()
     deferred.promise.error = deferred.promise.catch
 
-    fu = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
-    fu.then (res) ->
+    req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
+    req.then (res) ->
       # upload finalized
       file.status = 'Published'
       file.published = true
       deferred.resolve(file)
-    fu.error () ->
+    req.error () ->
       # upload finalized
       file.status = 'Publish failed'
       deferred.reject(file)
     deferred.promise
 
+  add_thing_to_collection: (file, collection_id) ->
+    file.status = 'Adding thing to collection'
+    deferred = $q.defer()
+    deferred.promise.error = deferred.promise.catch
+    req = add_thing_to_collection(collection_id, file.tv_obj.id, access_token)
+    req.then (file) ->
+      file.status = 'Added to collection'
+      file.cate = true
+      deferred.resolve(file)
+    req.error (file) ->
+      file.status = 'Failed add to collection'
+      deferred.reject(file)
+    deferred.promise
 
   delete_thing: (file) ->
     file.status = 'Deleting Thing'
     deferred = $q.defer()
     deferred.promise.error = deferred.promise.catch
 
-    fu = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
-    fu.then (res) ->
+    req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
+    req.then (res) ->
       # upload finalized
       file.status = 'Thing Deleted'
       deferred.resolve(file)
-    fu.error () ->
+    req.error () ->
       # upload finalized
       file.status = 'Delete Failed'
       deferred.reject(file)

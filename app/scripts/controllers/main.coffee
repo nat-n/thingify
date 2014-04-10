@@ -2,7 +2,7 @@
 
 angular.module('thingifyApp')
 
-.controller 'MainCtrl', ($scope, workflowHelper, thingiverseAPI, $filter, $http, $window) ->
+.controller 'MainCtrl', ($scope, workflowHelper, thingiverseAPI, $filter, $http, $window, $q) ->
   # fetch the client id from the backend
   $http.get("/client_id").then (res) -> $scope.client_id = res.data.client_id
 
@@ -41,7 +41,29 @@ angular.module('thingifyApp')
                       file: f
                       tv_obj: null
                       status: 'Selected'
+                      uploaded: false
+                      finalized: false
+                      published: false
+                      collected: false
                     } for f in files)
+
+  finalize_work = (file, remaining_attempts) ->
+    # this function is for the less linear parts of the workflow after uploading
+    # which involve simple requests that dont have to be done in order and
+    # can easily be retried in any order if they fail.
+    remaining_attempts = 3 if remaining_attempts is undefined
+    promises = []
+    if file.to_publish and not file.published
+      promises.push workflowHelper.publish_thing(file)
+    unless file.finalized
+      promises.push workflowHelper.finalize_upload(file)
+    if file.for_collection and not file.collected
+      promises.push workflowHelper.add_thing_to_collection(file)
+
+    $q.all(promises).then (-> file.satus = Complete), ->
+      if remaining_attempts > 0
+        setTimeout -> finalize_work(file, remaining_attempts-1)
+      else
 
   thingify_workflow = (file, thing_data) ->
     new_thing = _.cloneDeep(thing_data)
@@ -53,29 +75,13 @@ angular.module('thingifyApp')
     .then (file) ->
       uf = workflowHelper.upload_file(file)
       uf.then (file) ->
-
-        workflowHelper.finalize_upload(file)
-        .always (file) ->
-
-          workflowHelper.publish_thing(file)
-          .always (file) ->
-
-            unless file.finalized
-              workflowHelper.finalize_upload(file)
-              .always (file) ->
-
-                if file.published
-                  file.status = 'Published'
-                else
-                  # some retries of stuff that shouldn't really fail but does
-                  workflowHelper.publish_thing(file)
-                  workflowHelper.finalize_upload(file) unless file.finalized
+        finalize_work(file)
+      uf.catch () ->
+        workflowHelper.delete_thing(file)
 
   $scope.thingify = (event, thing_data) ->
     # clear the files input element
     filesInput.value = []
-
-    publish_thing = thing_data.publish
     thing_collection = thing_data.collection
 
     console.log 'thing_collection', thing_collection
@@ -97,7 +103,10 @@ angular.module('thingifyApp')
       ($filter('thingStatus')($scope.files, 'inProgress')).length
     $scope.$watch (-> fileIDs.length and count_active_things()), (activity) ->
       if activity < active_max and fileIDs.length
-        thingify_workflow($scope.files[fileIDs.shift()], thing_data)
+        next_file = $scope.files[fileIDs.shift()]
+        next_file.to_publish = thing_data.publish
+        next_file.for_collection = thing_data.collection
+        thingify_workflow(next_file, thing_data)
 
 
 # bind multiple file upload input tag to a model
