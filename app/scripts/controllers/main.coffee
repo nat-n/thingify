@@ -61,12 +61,12 @@ angular.module('thingifyApp')
 
     console.log file.name, file.published, file.finalized, file.collected, file
 
-    $q.all(promises).then (->
-        $scope.$apply -> file.satus = 'Complete'
-      ), (->
-        if remaining_attempts > 0
-          setTimeout -> finalize_work(file, remaining_attempts-1)
-      )
+    all_done = $q.all(promises)
+    all_done.then ->
+        file.satus = 'Complete'
+    all_done.catch ->
+      if remaining_attempts > 0
+        setTimeout -> finalize_work(file, remaining_attempts-1)
 
   thingify_workflow = (file, thing_data) ->
     new_thing = _.cloneDeep(thing_data)

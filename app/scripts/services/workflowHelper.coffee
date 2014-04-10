@@ -92,7 +92,7 @@ angular.module('thingifyApp')
     req = thingiverseAPI.add_thing_to_collection(file.for_collection, file.tv_obj.id, access_token)
     req.then (file) ->
       file.status = 'Added to collection'
-      file.cate = true
+      file.collected = true
       deferred.resolve(file)
     req.error (file) ->
       file.status = 'Failed add to collection'
