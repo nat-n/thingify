@@ -81,12 +81,11 @@ angular.module('thingifyApp')
     fu.then (res) ->
       # upload finalized
       file.status = 'Published'
-      file.finalized = true
+      file.published = true
       deferred.resolve(file)
     fu.error () ->
       # upload finalized
       file.status = 'Publish failed'
-      file.finalized = false
       deferred.reject(file)
     deferred.promise
 
@@ -100,11 +99,9 @@ angular.module('thingifyApp')
     fu.then (res) ->
       # upload finalized
       file.status = 'Thing Deleted'
-      file.finalized = true
       deferred.resolve(file)
     fu.error () ->
       # upload finalized
       file.status = 'Delete Failed'
-      file.finalized = false
       deferred.reject(file)
     deferred.promise
