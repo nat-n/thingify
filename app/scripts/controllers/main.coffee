@@ -55,14 +55,14 @@ angular.module('thingifyApp')
       uf.then (file) ->
 
         workflowHelper.finalize_upload(file)
-        .finally (file) ->
+        .always (file) ->
 
           workflowHelper.publish_thing(file)
-          .finally ->
+          .always (file) ->
 
             unless file.finalized
               workflowHelper.finalize_upload(file)
-              .finally ->
+              .always (file) ->
 
                 if file.published
                   file.status = 'Published'
