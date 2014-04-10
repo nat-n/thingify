@@ -75,7 +75,7 @@ angular.module('thingifyApp')
     deferred = $q.defer()
     deferred.promise.error = deferred.promise.catch
 
-    req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
+    req = thingiverseAPI.publish_thing(file.tv_obj.id, access_token)
     req.then (res) ->
       file.status = 'Published'
       file.published = true
