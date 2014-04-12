@@ -91,11 +91,14 @@ angular.module('thingifyApp')
     deferred = $q.defer()
     deferred.promise.error = deferred.promise.catch
     req = thingiverseAPI.add_thing_to_collection(file.for_collection, file.tv_obj.id, access_token)
+    console.log "COLLECTING"
     req.then (file) ->
+      console.log "COLLECTED"
       file.status = 'Added to collection'
       file.collected = true
       deferred.resolve(file)
     req.error (file) ->
+      console.log "NOT COLLECTED"
       file.status = 'Failed add to collection'
       deferred.reject(file)
     deferred.promise
