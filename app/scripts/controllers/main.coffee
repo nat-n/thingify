@@ -33,7 +33,7 @@ angular.module('thingifyApp')
   file_index_counter = -1
   $scope.$watch 'input_files', (files) ->
     return unless files
-    $scope.files = $scope.concat ({
+    $scope.files = $scope.files.concat ({
       name: f.name.split('.')[0]
       size: f.size
       i: file_index_counter+=1
