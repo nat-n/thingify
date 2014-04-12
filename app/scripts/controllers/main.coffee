@@ -70,7 +70,7 @@ angular.module('thingifyApp')
         d.then -> defers.collected = true
         d.error -> defers.notcollected = true
 
-    watch = $scope.$watch JSON.stringify(defers), (d) ->
+    watch = $scope.$watch (->JSON.stringify(defers)), (d) ->
       console.log 'd', d
       if file.finalize and file.publish and (file.collect or not file.for_collection)
         console.log 'c'
