@@ -33,18 +33,18 @@ angular.module('thingifyApp')
   file_index_counter = -1
   $scope.$watch 'input_files', (files) ->
     return unless files
-    $scope.files += ({
-                      name: f.name.split('.')[0]
-                      size: f.size
-                      i: file_index_counter+=1
-                      file: f
-                      tv_obj: null
-                      status: 'Selected'
-                      uploaded: false
-                      finalized: false
-                      published: false
-                      collected: false
-                    } for f in files)
+    $scope.files = $scope.concat ({
+      name: f.name.split('.')[0]
+      size: f.size
+      i: file_index_counter+=1
+      file: f
+      tv_obj: null
+      status: 'Selected'
+      uploaded: false
+      finalized: false
+      published: false
+      collected: false
+    } for f in files)
 
   finalize_work = (file, remaining_attempts) ->
     # this function is for the less linear parts of the workflow after uploading
@@ -119,7 +119,7 @@ angular.module('thingifyApp')
     delete thing_data.tags if thing_data.tags and not thing_data.tags.join('')
 
     # create todo list of files in this batch
-    fileIDs = (i for i in _.range($scope.files.length) when  $scope.files[i].status is 'Selected')
+    fileIDs = (f.i for f in $scope.files when f.status is 'Selected')
 
     # maintain an activity pool of up to `active_max` things in progress
     active_max = 3
