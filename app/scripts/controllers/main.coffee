@@ -76,9 +76,9 @@ angular.module('thingifyApp')
         console.log 'c'
         return file.status = 'Complete'
         watch()
-      if (not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized)) and
-          not defers.publish  or  defers.publish  and (defers.published or d.notpublished)  and
-          not defers.collect  or  defers.collect  and (defers.collected or d.notcollected))
+      if ((not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized))) and
+          (not defers.publish  or (defers.publish  and (defers.published or d.notpublished))) and
+          (not defers.collect  or (defers.collect  and (defers.collected or d.notcollected))))
         console.log 'd', remaining_attempts
         if remaining_attempts > 0
           unless file.finalize and file.publish and (file.collect or not file.for_collection)
