@@ -50,26 +50,30 @@ angular.module('thingifyApp')
     # this function is for the less linear parts of the workflow after uploading
     # which involve simple requests that dont have to be done in order and
     # can easily be retried in any order if they fail.
-    remaining_attempts = 3 if remaining_attempts is undefined
+    remaining_attempts = 5 if remaining_attempts is undefined
     defers = {}
     unless file.finalized
       defers.finalize = true
       d = workflowHelper.finalize_upload(file)
       d.then -> defers.finalized = true
       d.error -> defers.notfinalized = true
-    if file.to_publish and not file.published
-      defers.publish = true
-      d = workflowHelper.publish_thing(file)
-      d.then -> defers.published = true
-      d.error -> defers.notpublished = true
-    if file.for_collection and not file.collected
-      defers.collect = true
-      d = workflowHelper.add_thing_to_collection(file)
-      d.then -> defers.collected = true
-      d.error -> defers.notcollected = true
+    else
+      if file.to_publish and not file.published
+        defers.publish = true
+        d = workflowHelper.publish_thing(file)
+        d.then -> defers.published = true
+        d.error -> defers.notpublished = true
+      if file.for_collection and not file.collected
+        defers.collect = true
+        d = workflowHelper.add_thing_to_collection(file)
+        d.then -> defers.collected = true
+        d.error -> defers.notcollected = true
 
     watch = $scope.$watchCollection (->defers), (d) ->
-      if not _.keys(d) % 2 # all complete ;)
+      if not _.keys(d) % 2
+      if (defers.finalize and (defers.finalized or d.notfinalized) or
+          defers.publish and (defers.published or d.notpublished) or
+          defers.collect and (defers.collected or d.notcollected))
         if remaining_attempts > 0
           if d.notpublished or d.notfinalized or d.notcollected
             setTimeout -> finalize_work(file, remaining_attempts-1)
