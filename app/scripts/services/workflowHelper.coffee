@@ -22,6 +22,7 @@ angular.module('thingifyApp')
     deferred.promise
 
   request_upload: (file) ->
+    file.file_name = file.file.name.replace(/[^\w\.]/g,'-')
     file.status = 'Pre-registering upload'
     deferred = $q.defer()
     req = thingiverseAPI.request_upload(file, access_token)

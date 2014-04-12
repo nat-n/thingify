@@ -96,7 +96,7 @@ angular.module('thingifyApp')
     delete thing_data.tags if thing_data.tags and not thing_data.tags.join('')
 
     # create todo list of files in this batch
-    fileIDs = _.range($scope.files.length)
+    fileIDs = (i for i in _.range($scope.files.length) when  $scope.files[i].status is 'Selected')
 
     # maintain an activity pool of up to `active_max` things in progress
     active_max = 3
@@ -140,7 +140,7 @@ angular.module('thingifyApp')
       'Delete Failed',
       'Publish failed',
       'Failed add to collection',
-      'Not finalised'
+      'Not finalized',
     ]
   (files, status) ->
     result.length = 0

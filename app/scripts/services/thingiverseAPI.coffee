@@ -20,7 +20,7 @@ angular.module('thingifyApp')
       headers:
         'Authorization': "Bearer #{access_token}"
       data:
-        filename: file.file.name
+        filename: file.file_name
 
   s3_upload: (file, instructions) ->
     action = instructions.action
