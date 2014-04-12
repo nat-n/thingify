@@ -70,7 +70,6 @@ angular.module('thingifyApp')
         d.error -> defers.notcollected = true
 
     watch = $scope.$watchCollection (->defers), (d) ->
-      if not _.keys(d) % 2
       if (defers.finalize and (defers.finalized or d.notfinalized) or
           defers.publish and (defers.published or d.notpublished) or
           defers.collect and (defers.collected or d.notcollected))
