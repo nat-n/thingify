@@ -58,7 +58,6 @@ angular.module('thingifyApp')
       d.then -> defers.finalized = true
       d.error -> defers.notfinalized = true
     else
-      console.log '-'
       if file.to_publish and not file.published
         defers.publish = true
         d = workflowHelper.publish_thing(file)
@@ -73,15 +72,12 @@ angular.module('thingifyApp')
         file.status = 'Complete'
 
     watch = $scope.$watch (->JSON.stringify(defers)), (d) ->
-      console.log 'd', d
       if file.finalized and file.published and (file.collected or not file.for_collection)
-        console.log 'c'
         return file.status = 'Complete'
         watch()
       if ((not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized))) and
           (not defers.publish  or (defers.publish  and (defers.published or d.notpublished))) and
           (not defers.collect  or (defers.collect  and (defers.collected or d.notcollected))))
-        console.log 'd', remaining_attempts
         if remaining_attempts > 0
           unless (file.finalized and file.published and (file.collected or not file.for_collection))
             setTimeout -> finalize_work(file, remaining_attempts-1)
@@ -137,12 +133,14 @@ angular.module('thingifyApp')
     active_max = 3
     count_active_things = () ->
       ($filter('thingStatus')($scope.files, 'inProgress')).length
-    $scope.$watch (-> fileIDs.length and count_active_things()), (activity) ->
+    watch = $scope.$watch (-> fileIDs.length and count_active_things()), (activity) ->
       if activity < active_max and fileIDs.length
         next_file = $scope.files[fileIDs.shift()]
         next_file.to_publish = thing_data.publish
         next_file.for_collection = thing_data.collection
         thingify_workflow(next_file, thing_data)
+      watch() if fileIDs.length is 0
+
 
 
 # bind multiple file upload input tag to a model
