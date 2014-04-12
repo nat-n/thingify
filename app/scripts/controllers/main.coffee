@@ -2,7 +2,7 @@
 
 angular.module('thingifyApp')
 
-.controller 'MainCtrl', ($scope, workflowHelper, thingiverseAPI, $filter, $http, $window, $q, $timeout) ->
+.controller 'MainCtrl', ($scope, workflowHelper, thingiverseAPI, $filter, $http, $window, $q) ->
   # fetch the client id from the backend
   $http.get("/client_id").then (res) -> $scope.client_id = res.data.client_id
 
@@ -52,16 +52,16 @@ angular.module('thingifyApp')
     # can easily be retried in any order if they fail.
     remaining_attempts = 3 if remaining_attempts is undefined
     defers = {}
-    if file.to_publish and not file.published
-      defers.publish = true
-      d = workflowHelper.publish_thing(file)
-      d.then -> defers.published = true
-      d.error -> defers.notpublished = true
     unless file.finalized
       defers.finalize = true
       d = workflowHelper.finalize_upload(file)
       d.then -> defers.finalized = true
       d.error -> defers.notfinalized = true
+    if file.to_publish and not file.published
+      defers.publish = true
+      d = workflowHelper.publish_thing(file)
+      d.then -> defers.published = true
+      d.error -> defers.notpublished = true
     if file.for_collection and not file.collected
       defers.collect = true
       d = workflowHelper.add_thing_to_collection(file)
@@ -72,7 +72,7 @@ angular.module('thingifyApp')
       if not _.keys(d) % 2 # all complete ;)
         if remaining_attempts > 0
           if d.notpublished or d.notfinalized or d.notcollected
-            $timeout -> finalize_work(file, remaining_attempts-1)
+            setTimeout -> finalize_work(file, remaining_attempts-1)
         else
           if d.notfinalized
             if d.collected
