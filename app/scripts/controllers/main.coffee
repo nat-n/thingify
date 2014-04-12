@@ -58,6 +58,7 @@ angular.module('thingifyApp')
       d.then -> defers.finalized = true
       d.error -> defers.notfinalized = true
     else
+      console.log '-'
       if file.to_publish and not file.published
         defers.publish = true
         d = workflowHelper.publish_thing(file)
@@ -70,11 +71,15 @@ angular.module('thingifyApp')
         d.error -> defers.notcollected = true
 
     watch = $scope.$watchCollection (->defers), (d) ->
+      console.log 'd', d
       if file.finalize and file.publish and file.collect
+        console.log 'c'
         return file.status = 'Complete'
+        watch()
       if (not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized)) and
-          not defers.publish or defers.publish and (defers.published or d.notpublished) and
-          not defers.collect or defers.collect and (defers.collected or d.notcollected))
+          not defers.publish  or  defers.publish  and (defers.published or d.notpublished)  and
+          not defers.collect  or  defers.collect  and (defers.collected or d.notcollected))
+        console.log 'd', remaining_attempts
         if remaining_attempts > 0
           unless file.finalize and file.publish and file.collect
             setTimeout -> finalize_work(file, remaining_attempts-1)
