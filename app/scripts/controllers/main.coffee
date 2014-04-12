@@ -83,7 +83,7 @@ angular.module('thingifyApp')
           (not defers.collect  or (defers.collect  and (defers.collected or d.notcollected))))
         console.log 'd', remaining_attempts
         if remaining_attempts > 0
-          unless file.finalized and file.published and (file.collected or not file.for_collection)
+          unless (file.finalized and file.published and (file.collected or not file.for_collection))
             setTimeout -> finalize_work(file, remaining_attempts-1)
         else
           if d.notfinalized
