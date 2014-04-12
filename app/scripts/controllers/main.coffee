@@ -70,13 +70,13 @@ angular.module('thingifyApp')
         d.error -> defers.notcollected = true
 
     watch = $scope.$watchCollection (->defers), (d) ->
+      if file.finalize and file.publish and file.collect
+        return file.status = 'Complete'
       if (not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized)) and
           not defers.publish or defers.publish and (defers.published or d.notpublished) and
           not defers.collect or defers.collect and (defers.collected or d.notcollected))
         if remaining_attempts > 0
-          if file.finalize and file.publish and file.collect
-            file.status = 'Complete'
-          else
+          unless file.finalize and file.publish and file.collect
             setTimeout -> finalize_work(file, remaining_attempts-1)
         else
           if d.notfinalized
