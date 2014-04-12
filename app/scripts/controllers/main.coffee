@@ -30,13 +30,13 @@ angular.module('thingifyApp')
 
   $scope.files = []
 
+  file_index_counter = -1
   $scope.$watch 'input_files', (files) ->
     return unless files
-    i = -1
-    $scope.files = ({
+    $scope.files += ({
                       name: f.name.split('.')[0]
                       size: f.size
-                      i: i+=1
+                      i: file_index_counter+=1
                       file: f
                       tv_obj: null
                       status: 'Selected'
