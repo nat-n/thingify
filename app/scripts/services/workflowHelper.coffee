@@ -60,7 +60,7 @@ angular.module('thingifyApp')
     deferred.promise.error = deferred.promise.catch
 
     req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
-    req.then (res) ->
+    req.then () ->
       # upload finalized
       file.status = 'Upload Finalized'
       file.finalized = true
@@ -77,7 +77,7 @@ angular.module('thingifyApp')
     deferred.promise.error = deferred.promise.catch
 
     req = thingiverseAPI.publish_thing(file.tv_obj.id, access_token)
-    req.then (res) ->
+    req.then () ->
       file.status = 'Published'
       file.published = true
       deferred.resolve(file)
@@ -92,12 +92,12 @@ angular.module('thingifyApp')
     deferred.promise.error = deferred.promise.catch
     req = thingiverseAPI.add_thing_to_collection(file.for_collection, file.tv_obj.id, access_token)
     console.log "COLLECTING"
-    req.then (file) ->
+    req.then () ->
       console.log "COLLECTED"
       file.status = 'Added to collection'
       file.collected = true
       deferred.resolve(file)
-    req.error (file) ->
+    req.error () ->
       console.log "NOT COLLECTED"
       file.status = 'Failed add to collection'
       deferred.reject(file)
@@ -109,7 +109,7 @@ angular.module('thingifyApp')
     deferred.promise.error = deferred.promise.catch
 
     req = thingiverseAPI.finalize_upload(file.finalize_url, access_token)
-    req.then (res) ->
+    req.then () ->
       # upload finalized
       file.status = 'Thing Deleted'
       deferred.resolve(file)
