@@ -46,58 +46,65 @@ angular.module('thingifyApp')
       collected: false
     } for f in files)
 
+
   finalize_work = (file, remaining_attempts) ->
     # this function is for the less linear parts of the workflow after uploading
     # which involve simple requests that dont have to be done in order and
     # can easily be retried in any order if they fail.
     remaining_attempts = 5 if remaining_attempts is undefined
-    defers = {}
-    unless file.finalized
-      defers.finalize = true
-      d = workflowHelper.finalize_upload(file)
-      d.then -> defers.finalized = true
-      d.error -> defers.notfinalized = true
-    else
+
+    if file.finalized and (file.published or not file.to_publish) and (file.collected or not file.for_collection)
+      return file.status = 'Complete'
+
+    if file.finalized
+      defers = {}
+      console.log '-'
+
       if file.to_publish and not file.published
-        defers.publish = true
+        defers.published = undefined
         d = workflowHelper.publish_thing(file)
-        d.then -> defers.published = true
-        d.error -> defers.notpublished = true
+        d.then  -> defers.published = 'done'
+        d.error -> defers.published = 'fail'
+
       if file.for_collection and not file.collected
-        defers.collect = true
+        defers.collected = undefined
         d = workflowHelper.add_thing_to_collection(file)
-        d.then -> defers.collected = true
-        d.error -> defers.notcollected = true
-      if file.published and file.collected
-        file.status = 'Complete'
+        d.then  -> defers.collected = 'done'
+        d.error -> defers.collected = 'fail'
 
-    watch = $scope.$watch (->JSON.stringify(defers)), (d) ->
-      if file.finalized and file.published and (file.collected or not file.for_collection)
-        return file.status = 'Complete'
-        watch()
-      if ((not defers.finalize or (defers.finalize and (defers.finalized or d.notfinalized))) and
-          (not defers.publish  or (defers.publish  and (defers.published or d.notpublished))) and
-          (not defers.collect  or (defers.collect  and (defers.collected or d.notcollected))))
-        if remaining_attempts > 0
-          unless (file.finalized and file.published and (file.collected or not file.for_collection))
-            setTimeout -> finalize_work(file, remaining_attempts-1)
-        else
-          if d.notfinalized
-            if d.collected
-              file.status = 'Upload and added to collection but publish failed'
-            else
-              file.status = 'Upload finalize failed'
-              workflowHelper.delete_thing(file)
+      watch = $scope.$watch (->JSON.stringify(defers)), () ->
+        console.log 'defers', JSON.stringify(defers)
+        if (file.published or not file.to_publish) and (file.collected or not file.for_collection)
+          console.log 'comp'
+          file.status = 'Complete'
+          watch()
 
-          else if d.notpublished
-            if d.collected
-              file.status = 'Uploaded but not published'
-            else
-              file.status = 'Uploaded but not published or added to collection'
+        else if _.all (defers[d] for d of defers) # all promises resolved or rejected
+          console.log 'remaining_attempts', remaining_attempts
 
-          else if d.notcollected
-              file.status = 'Published but not added to collection'
-        watch()
+          if remaining_attempts > 0
+            unless (file.published and (file.collected or not file.for_collection))
+              setTimeout -> finalize_work(file, remaining_attempts-1)
+          else
+            if d.published is 'fail'
+              if d.collected is 'done'
+                file.status = 'Uploaded but not published'
+              else
+                file.status = 'Uploaded but not published or added to collection'
+
+            else if d.collected is 'fail'
+                file.status = 'Published but not added to collection'
+          watch()
+
+    else if remaining_attempts
+      d = workflowHelper.finalize_upload(file)
+      d.then ->
+        finalize_work(file, remaining_attempts)
+      d.error ->
+        finalize_work(file, remaining_attempts-1)
+    else
+      # what if not finalized???
+      # then failed and delete??
 
 
   thingify_workflow = (file, thing_data) ->
@@ -137,7 +144,7 @@ angular.module('thingifyApp')
       if activity < active_max and fileIDs.length
         next_file = $scope.files[fileIDs.shift()]
         next_file.to_publish = thing_data.publish
-        next_file.for_collection = thing_data.collection
+        next_file.for_collection = thing_data.collection or false
         thingify_workflow(next_file, thing_data)
       watch() if fileIDs.length is 0
 
