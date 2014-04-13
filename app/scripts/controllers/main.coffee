@@ -58,7 +58,7 @@ angular.module('thingifyApp')
 
     if file.finalized
       defers = {}
-      console.log '-'
+      console.log '-', JSON.stringify(file)
 
       if file.to_publish and not file.published
         defers.published = undefined
