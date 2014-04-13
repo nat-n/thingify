@@ -47,10 +47,10 @@ angular.module('thingifyApp')
     } for f in files)
 
 
-  finalize_work = (file, remaining_attempts) ->
-    # this function is for the less linear parts of the workflow after uploading
-    # which involve simple requests that dont have to be done in order and
-    # can easily be retried in any order if they fail.
+  finalize_work = (file, remaining_attempts, fail_cb) ->
+    # this function handles the upload finalize and (maybe ) publish and add to
+    #  collection parts of the workflow, which can reasonably be retried upon
+    #  failure.
     remaining_attempts = 5 if remaining_attempts is undefined
 
     if file.finalized and (file.published or not file.to_publish) and (file.collected or not file.for_collection)
@@ -58,7 +58,6 @@ angular.module('thingifyApp')
 
     if file.finalized
       defers = {}
-      console.log '-', JSON.stringify(file)
 
       if file.to_publish and not file.published
         defers.published = undefined
@@ -72,19 +71,15 @@ angular.module('thingifyApp')
         d.then  -> defers.collected = 'done'
         d.error -> defers.collected = 'fail'
 
-      watch = $scope.$watch (->JSON.stringify(defers)), () ->
-        console.log 'defers', JSON.stringify(defers)
+      watch = $scope.$watch (-> defers), (() ->
         if (file.published or not file.to_publish) and (file.collected or not file.for_collection)
-          console.log 'comp'
           file.status = 'Complete'
           watch()
-
-        else if _.all (defers[d] for d of defers) # all promises resolved or rejected
-          console.log 'remaining_attempts', remaining_attempts
-
+        else if _.all (defers[d] for d of defers)
+          # all promises resolved or rejected
           if remaining_attempts > 0
             unless (file.published and (file.collected or not file.for_collection))
-              setTimeout -> finalize_work(file, remaining_attempts-1)
+              setTimeout -> finalize_work(file, remaining_attempts-1, fail_cb)
           else
             if d.published is 'fail'
               if d.collected is 'done'
@@ -95,16 +90,17 @@ angular.module('thingifyApp')
             else if d.collected is 'fail'
                 file.status = 'Published but not added to collection'
           watch()
+        ), true
 
     else if remaining_attempts
       d = workflowHelper.finalize_upload(file)
       d.then ->
-        finalize_work(file, remaining_attempts)
+        finalize_work(file, remaining_attempts, fail_cb)
       d.error ->
-        finalize_work(file, remaining_attempts-1)
+        finalize_work(file, remaining_attempts-1, fail_cb)
     else
-      # what if not finalized???
-      # then failed and delete??
+      # if not finalised then treat as failed upload
+      fail_cb(file) if fail_cb
 
 
   thingify_workflow = (file, thing_data) ->
@@ -117,7 +113,8 @@ angular.module('thingifyApp')
     .then (file) ->
       uf = workflowHelper.upload_file(file)
       uf.then (file) ->
-        finalize_work(file)
+        finalize_work file, 5, (file) ->
+          workflowHelper.delete_thing(file)
       uf.catch () ->
         workflowHelper.delete_thing(file)
 
